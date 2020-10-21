@@ -1,0 +1,39 @@
+ ###
+ GET http://localhost:9000/
+ 
+###
+GET http://localhost:9000/traffic-light/
+###
+
+GET http://localhost:9000/traffic-light/3
+
+###
+PUT http://localhost:9000/traffic-light 
+content-type: application/json
+
+{
+    "id" : 4,
+    "color" : "Orange"
+}
+
+###
+PUT http://localhost:9000/traffic-light
+Content-Type: application/json
+
+{
+  "id": 12,
+  "color": "Green"
+}
+###
+PUT http://localhost:9000/traffic-light-async
+Content-Type: application/json
+
+{
+  "id": 12,
+  "color": "Red"
+}
+###
+ GET http://localhost:9000/avail
+
+###
+GET http://localhost:9000/traffic-light?color=Green

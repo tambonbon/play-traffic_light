@@ -1,0 +1,25 @@
+@host = http://localhost:9000
+
+# Get ALL
+###
+GET {{host}}/traffic-light
+
+###
+
+# Create traffic light:
+
+@id = 1
+###
+PUT {{host}}/traffic-light
+Content-Type: application/json
+
+{
+  "id": {{id}},
+  "color": "Red"
+}
+
+####
+
+# Get the traffic light we created:
+
+GET {{host}}/traffic-light/{{id}}

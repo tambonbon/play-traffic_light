@@ -1,0 +1,106 @@
+ curl --header "Content-type: application/json" --request PUT --data '{"id": 4, "color": "Orange"}' http://localhost:9000/traffic-light
+ 
+if (list(light.id).color == "Orange" && list(light.id).color == "Red") {
+              save(Map(light.id -> light))
+              Ok(Json.toJson(toTrafficLight(list)))
+            }
+            else if (list(light.id).color == "Green") {
+              val temp: TrafficLight = TrafficLight(light.id, "Orange")
+              save(Map(light.id -> temp))
+              Ok(Json.toJson(toTrafficLight(list)))
+              Thread.sleep(5000)
+              save(Map(light.id -> light))
+              Ok(Json.toJson(toTrafficLight(list)))
+
+            }
+  // }
+  // // def update1 = Action(parse.json) { request => 
+  // //   val result = request.body.validate[TrafficLight]
+  // //   result match {
+  // //     case JsError(errors) => {
+  // //       val err = JsError.toJson(errors)
+        
+  // //       TrafficLight.save(errors)
+  // //       Ok(Json.obj("message" -> ("Traffic '" +  + "' created.")))
+  // //     }
+  // //     case JsSuccess(value, path) => {
+  // //       TrafficLight.update(value.id, value.color)
+  // //       Ok(Json.obj("message" -> ("Traffic '" + value.id + "' updated.")))
+  // //     }
+  // //   }
+  // // }
+
+// def update = Action(parse.json) { request => 
+  //   val result = request.body.validate[TrafficLight]
+  //   result.fold(
+  //     errors => {
+  //       BadRequest(Json.obj("message" -> JsError.toJson(errors)))
+  //     },
+  //     light => { 
+  //       // if (TrafficLight.list.foreach{ i => 
+  //       //   val id = i._1}.contains(light.id)) {
+  //       //   // val updated = light.asInstanceOf[] ++ Json.obj("id" -> light.id)
+  //       //   // Ok(Json.toJson(light.(tl => TrafficLight.update(tl, light.id))))
+  //       //   val someId = light.id
+  //       //   TrafficLight.update(light, someId)
+  //       //   Ok(Json.obj("message" -> ("Traffic '" + light.id + "' updated.")))
+
+  //       // }
+  //       // else {
+  //         TrafficLight.save(light)
+  //         Ok(Json.obj("message" -> ("Traffic '" + light.id + "' created.")))
+  //         val json = Json.toJson(list)
+  //         Ok(json)
+  //       }
+        
+  //     // }
+  //   )
+  // }
+  // def traffic_light = Action { request => 
+  //   request.body.asJson match {
+  //     case Some(value) => {
+  //       val json = request.body.asJson.get
+  //       val traffic = json.as[TrafficLight]
+  //       println(traffic)
+  //       Ok
+  //     }
+  //     case None => BadRequest("No JSON found")
+  //   }
+  // }
+
+      // def update(tl: mutable.Map[Int, String], key: Int, newKey: Int) = {
+    //   val default = "default"
+    //   val value = tl.remove(key).getOrElse(default)
+    //   tl += newKey -> value
+    // }
+    // c.getClass.getDeclaredFields.map(_.getName)
+    // list.getClass.getDeclaredField.map(_.getName)
+    
+//     def save(tl: TrafficLight) = { list = list ++ Set(tl) }
+// //     val transformer = (__ \ "id").json.update(
+// //          __.read[TrafficLight].map(_ => Json.toJson("updated value"))
+// // )
+//     def update(tl: TrafficLight, someId: Int): TrafficLight = { tl.copy(id = someId)}
+
+    // def update(id: Int, color: String): JsObject = { list.[JsObject] ++  ("id" -> id) }
+
+      def parseLight[A](response: WSResponse)(implicit reads: Reads[A]): Future[A] = {
+    Json.fromJson[A](response.json) match {
+      case JsSuccess(value, _) => Future.successful(value)
+      case error: JsError => Future.failed(new Exception("Failed"))
+    }
+  }
+  def toGreen1(fromLight: TrafficLight): Future[TrafficLight] = {
+    ws.url(s"http://localhost:9000/traffic-light")
+    .put(Json.toJson(fromLight))
+    .flatMap(parseLight[TrafficLight](_))
+  }
+   
+  def toGreen(fromLight: TrafficLight): Future[TrafficLight] = {
+    ws.url(s"http://localhost:9000/traffic-light")
+    .addHttpHeaders("Accept" -> "application/json")
+    .addQueryStringParameters("search" -> "play")
+    .withRequestTimeout(10000.millis)
+    .get()
+    .map(_.json.as[TrafficLight])
+  }
